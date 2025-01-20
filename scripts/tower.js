@@ -45,6 +45,7 @@ class Tower extends PIXI.Sprite {
     this.next_radius = 0;
     this.levelUpPin = false;
     this.zIndex = 1;
+    this.maxedOut = false;
 
     this.initTower();
   }
@@ -52,6 +53,7 @@ class Tower extends PIXI.Sprite {
   async initTower() {
     switch (this.type) {
       case "splash":
+        this.maxLevel = 5;
         this.effect = "splash";
         this.bullet_radius = 5;
         this.bullet_color = 0x996863;
@@ -67,16 +69,17 @@ class Tower extends PIXI.Sprite {
         this.radius = 125;
 
         this.level_incrementor = 1;
-        this.cost_incrementor = 2;
+        this.cost_incrementor = 20;
         this.damage_incrementor = 2;
-        this.rateOfFire_incrementor = 150;
+        this.rateOfFire_incrementor = 100;
         this.bulletSpeed_incrementor = 0.2;
-        this.radius_incrementor = 10;
+        this.radius_incrementor = 1.1;
         break;
 
       case "slow":
+        this.maxLevel = 5;
         this.effect = "slow";
-        this.bullet_radius = 7;
+        this.bullet_radius = 4;
         this.bullet_color = 0x85b4f2;
         this.maxRateOfFire = 300;
         this.bullet_splashRadius = 0;
@@ -90,14 +93,15 @@ class Tower extends PIXI.Sprite {
         this.radius = 100;
 
         this.level_incrementor = 1;
-        this.cost_incrementor = 3;
-        this.damage_incrementor = 3;
-        this.rateOfFire_incrementor = 200;
+        this.cost_incrementor = 15;
+        this.damage_incrementor = 1.7;
+        this.rateOfFire_incrementor = 150;
         this.bulletSpeed_incrementor = 0.3;
-        this.radius_incrementor = 15;
+        this.radius_incrementor = 1.2;
         break;
 
       default: // "standard"
+        this.maxLevel = 5;
         this.effect = "none";
         this.bullet_radius = 3.5;
         this.bullet_color = 0x56a843;
@@ -113,11 +117,11 @@ class Tower extends PIXI.Sprite {
         this.radius = 200;
 
         this.level_incrementor = 1;
-        this.cost_incrementor = 1;
-        this.damage_incrementor = 1;
-        this.rateOfFire_incrementor = 100;
+        this.cost_incrementor = 10;
+        this.damage_incrementor = 1.2;
+        this.rateOfFire_incrementor = 50;
         this.bulletSpeed_incrementor = 0.1;
-        this.radius_incrementor = 5;
+        this.radius_incrementor = 1.05;
         break;
     }
 
@@ -202,6 +206,10 @@ class Tower extends PIXI.Sprite {
     );
     app.stage.addChild(this.towerCircle);
 
+    if (this.level >= this.maxLevel) {
+      this.maxedOut = true;
+    }
+
     // Add tooltip.
     this.towerToolTip = new TowerToolTip(
       this.x,
@@ -224,7 +232,7 @@ class Tower extends PIXI.Sprite {
       this.next_rateOfFire,
       this.next_bulletSpeed,
       this.next_radius,
-      this.active
+      this.maxedOut
     );
     app.stage.addChild(this.towerToolTip);
     this.towerToolTip.activate();
@@ -290,14 +298,14 @@ class Tower extends PIXI.Sprite {
 
   setNextLevelValues() {
     this.next_level = this.level + this.level_incrementor;
-    this.next_cost = this.cost + this.cost_incrementor;
-    this.next_damage = this.damage + this.damage_incrementor;
+    this.next_cost = this.cost + this.cost_incrementor * this.level;
+    this.next_damage = this.damage + this.damage_incrementor * this.level;
     if (this.rateOfFire - this.rateOfFire_incrementor > this.maxRateOfFire) {
       // Max Rate of fire was not reached
       this.next_rateOfFire = this.rateOfFire - this.rateOfFire_incrementor;
     }
     this.next_bulletSpeed = this.bulletSpeed + this.bulletSpeed_incrementor;
-    this.next_radius = this.radius + this.radius_incrementor;
+    this.next_radius = Math.round(this.radius * this.radius_incrementor);
   }
 
   upgrade() {
@@ -452,7 +460,7 @@ class Tower extends PIXI.Sprite {
     this.levelUpPin.width = 24;
     this.levelUpPin.height = 24;
     this.levelUpPin.tint = 0x00ff00;
-    this.levelUpPin.position.set(this.x - 18, this.y - 18);
+    this.levelUpPin.position.set(this.x - 12, this.y - 18);
     this.levelUpPin.zIndex = 999;
     app.stage.addChild(this.levelUpPin);
   }
@@ -463,16 +471,19 @@ class Tower extends PIXI.Sprite {
     }
     this.crownSprite = PIXI.Sprite.from(this.crownTexture);
     this.crownSprite.anchor.set(0.5);
-    this.crownSprite.width = 24;
-    this.crownSprite.height = 24;
-    this.crownSprite.position.set(this.x - 18, this.y - 18);
+    this.crownSprite.width = 16;
+    this.crownSprite.height = 16;
+    this.crownSprite.position.set(this.x - 12, this.y - 18);
     this.crownSprite.zIndex = 999;
     app.stage.addChild(this.crownSprite);
   }
 
   removeLevelUpPin() {
     app.stage.removeChild(this.levelUpPin);
-    this.levelUpPin.destroy();
+    if (this.levelUpPin) {
+      // There is was a scenario where the function was triggered even though 'this.levelUpPin' was nothing, so handle this
+      this.levelUpPin.destroy();
+    }
     this.levelUpPin = null;
   }
 

@@ -357,6 +357,9 @@ function cleanWorld() {
       if (twr.levelUpPin) {
         twr.removeLevelUpPin();
       }
+      if (twr.crownSprite) {
+        twr.removeCrown();
+      }
     });
     destroyElements(towers);
   }

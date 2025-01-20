@@ -21,9 +21,6 @@ class Menu extends PIXI.Container {
     this.heartSprite = heartSprite;
     this.towerSpritesheet = towerSpritesheet;
     this.playPauseSpritesheet = playPauseSpritesheet;
-    this.menuIcon1_price = 5;
-    this.menuIcon2_price = 7;
-    this.menuIcon3_price = 6;
     this.roundsLbl_x = 240;
     this.wrldEditor_x = 45;
     this.heartIcon_x = 250;
@@ -144,7 +141,7 @@ class Menu extends PIXI.Container {
       this.menuIcon1_x,
       this.menuIcon_y,
       this.gold,
-      this.menuIcon1_price
+      this.standardBtn.cost
     );
 
     this.addChild(this.standardLbl);
@@ -163,7 +160,7 @@ class Menu extends PIXI.Container {
       this.menuIcon2_x,
       this.menuIcon_y,
       this.gold,
-      this.menuIcon2_price
+      this.splashBtn.cost
     );
 
     this.addChild(this.splashLbl);
@@ -182,7 +179,7 @@ class Menu extends PIXI.Container {
       this.menuIcon3_x,
       this.menuIcon_y,
       this.gold,
-      this.menuIcon3_price
+      this.slowBtn.cost
     );
 
     this.addChild(this.slowLbl);

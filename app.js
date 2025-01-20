@@ -41,6 +41,7 @@ let towerCount = 0;
 let enemyCount = 0;
 let hudContainer;
 let enemiesKilled = 0;
+let enemiesKilledThisRound = 0;
 
 let sprite;
 let towerSpritesheet;
@@ -68,9 +69,9 @@ function run() {
     });
     document.body.appendChild(app.canvas);
 
-    // roadsSprites.meta.image = "/assets/road-spritesheet.png";
-    // towerSprites.meta.image = "/assets/tower-spritesheet.png";
-    // playPauseSprites.meta.image = "/assets/play-pause-spritesheet.png";
+    roadsSprites.meta.image = "/assets/road-spritesheet.png";
+    towerSprites.meta.image = "/assets/tower-spritesheet.png";
+    playPauseSprites.meta.image = "/assets/play-pause-spritesheet.png";
 
     const roadTexture = await PIXI.Assets.load(roadsSprites.meta.image);
     roadSpritesheet = new PIXI.Spritesheet(roadTexture, roadsSprites);
@@ -215,6 +216,7 @@ function restartWorld() {
   towerCount = 0;
   enemyCount = 0;
   enemiesKilled = 0;
+  enemiesKilledThisRound = 0;
 
   menu.gold = 15;
   menu.lives = 30;
@@ -339,14 +341,15 @@ function updateTick(deltaTime) {
     }
   }
 
-  // Level Up Pin
+  // Draw LevelUpPin
   towers.forEach((tower) => {
     if (tower.cost <= menu.gold) {
       // This tower should have level up pin visible
       if (!tower.levelUpPin) {
         tower.addLevelUpPin();
       }
-      if (tower.level === 10 && tower.levelUpPin !== null) {
+      if (tower.level === tower.maxLevel && tower.levelUpPin) {
+        // Make sure that LevelUpPin and Crown doesn't exist at the same time
         tower.removeLevelUpPin();
       }
     } else {
@@ -431,6 +434,7 @@ function checkHitEnemy(bullet, enemies, deltaTime) {
       if (enemies[i].health <= 0) {
         menu.addGold(enemies[i].prizeMoney);
         enemiesKilled++;
+        enemiesKilledThisRound++;
 
         if (enemies[i].enemyToolTip) {
           enemies[i].destroyEnemyToolTip();
@@ -629,7 +633,6 @@ function spawnEnemy(deltaMS) {
   if (currentRound.enemies === 0) {
     spawnElapsed = -10000; // Pause in between rounds.
     rounds.shift();
-    roundsCounter++;
     firstEnemy = true;
     return;
   }
@@ -656,9 +659,17 @@ function spawnEnemy(deltaMS) {
 
     if (firstEnemy) {
       // First enemy of this round
-      addHeart(roundsCounter);
+
+      const heartsAmount = Math.round(enemiesKilledThisRound * 0.1);
+      if (heartsAmount === 0) {
+        addHeart(1);
+      } else {
+        addHeart(heartsAmount);
+      }
+      roundsCounter++;
       menu.updateRoundCounter(roundsCounter);
       firstEnemy = false;
+      enemiesKilledThisRound = 0;
     }
   }
 }

@@ -19,7 +19,8 @@ class TowerToolTip extends PIXI.Graphics {
     next_damage,
     next_rateOfFire,
     next_bulletSpeed,
-    next_radius
+    next_radius,
+    maxedOut
   ) {
     super();
     this.tower_x = x;
@@ -51,6 +52,7 @@ class TowerToolTip extends PIXI.Graphics {
     this.next_rateOfFire = next_rateOfFire;
     this.next_bulletSpeed = next_bulletSpeed;
     this.next_radius = next_radius;
+    this.maxedOut = maxedOut;
 
     this.zIndex = 999;
     // this.towerIsActive = false;
@@ -117,22 +119,44 @@ class TowerToolTip extends PIXI.Graphics {
     );
     this.fill(this.color);
 
-    this.writeEntry(
-      "Type",
-      String(this.type).charAt(0).toUpperCase() + String(this.type).slice(1),
-      ""
-    );
-    this.writeEntry("Level", this.level, this.next_level);
-    this.writeEntry("Cost", this.cost, this.next_cost);
-    this.writeEntry("Damage", this.damage, this.next_damage);
-    this.writeEntry("Rate of fire", this.rateOfFire, this.next_rateOfFire);
-    this.writeEntry(
-      "Bullet speed",
-      Math.round(this.bulletSpeed * 100) / 100,
-      Math.round(this.next_bulletSpeed * 100) / 100
-    );
-    this.writeEntry("Radius", this.radius, this.next_radius);
-    this.writeEntry("Effect", this.effect, "");
+    if (!this.maxedOut) {
+      this.writeEntry(
+        "Type",
+        String(this.type).charAt(0).toUpperCase() + String(this.type).slice(1),
+        ""
+      );
+      this.writeEntry("Level", this.level, this.next_level);
+      this.writeEntry("Cost", this.cost, this.next_cost);
+      this.writeEntry("Damage", this.damage, this.next_damage);
+      this.writeEntry("Rate of fire", this.rateOfFire, this.next_rateOfFire);
+      this.writeEntry(
+        "Bullet speed",
+        Math.round(this.bulletSpeed * 100) / 100,
+        Math.round(this.next_bulletSpeed * 100) / 100
+      );
+      this.writeEntry("Radius", this.radius, this.next_radius);
+      this.writeEntry("Effect", this.effect, "");
+    } else {
+      // Tower is max level, so tooltip will look a bit different
+      this.writeEntry(
+        "Type",
+        String(this.type).charAt(0).toUpperCase() +
+          String(this.type).slice(1) +
+          " MAX",
+        ""
+      );
+      this.writeEntry("Level", this.level, "");
+      this.writeEntry("Cost", this.cost, "");
+      this.writeEntry("Damage", this.damage, "");
+      this.writeEntry("Rate of fire", this.rateOfFire, "");
+      this.writeEntry(
+        "Bullet speed",
+        Math.round(this.bulletSpeed * 100) / 100,
+        ""
+      );
+      this.writeEntry("Radius", this.radius, "");
+      this.writeEntry("Effect", this.effect, "");
+    }
   }
 
   writeEntry(key, value, value2) {
@@ -156,7 +180,6 @@ class TowerToolTip extends PIXI.Graphics {
     lbl.x = this.toolTip_x + 5;
     lbl.y = this.toolTip_y + this.toolTipTextStart;
 
-    // if (this.toolTipActive) {
     if (value2 !== "") {
       // 'Next' value must be entered
       // Opening round brackets
@@ -189,7 +212,6 @@ class TowerToolTip extends PIXI.Graphics {
       lbl4.y = this.toolTip_y + this.toolTipTextStart;
       this.addChild(lbl4);
     }
-    // }
     this.toolTip_y = this.toolTip_y + this.toolTipTextRowOffset;
     this.addChild(lbl);
   }
@@ -201,8 +223,4 @@ class TowerToolTip extends PIXI.Graphics {
   deactivate() {
     this.toolTipActive = false;
   }
-
-  //   setTooltipTowerActive(){
-  //     this.towerIsActive = true;
-  //   }
 }
