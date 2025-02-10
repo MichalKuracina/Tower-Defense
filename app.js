@@ -151,7 +151,6 @@ function run() {
     menu.worldEditorBtn.on("pointerdown", createWorld);
     menu.saveBtn.on("pointerdown", saveWorld);
     menu.loadBtn.on("pointerdown", loadWorld);
-    // app.stage.on("pointerdown", addHeart);
 
     loadButtonStatus();
 
@@ -549,10 +548,56 @@ function goodToBuild(dEl) {
   const elBottomEdge = dEl.y + dEl.height / 3;
 
   paths.forEach((item) => {
-    const itemLeftEdge = item.x - item.width / 4;
-    const itemRightEdge = item.x + item.width / 4;
-    const itemTopEdge = item.y - item.height / 4;
-    const itemBottomEdge = item.y + item.height / 4;
+    let itemLeftEdge;
+    let itemRightEdge;
+    let itemTopEdge;
+    let itemBottomEdge;
+
+    if (item.direction === "left" || item.direction === "right") {
+      itemLeftEdge = item.x - item.width / 2;
+      itemRightEdge = item.x + item.width / 2;
+      itemTopEdge = item.y - item.height / 4;
+      itemBottomEdge = item.y + item.height / 4;
+    }
+
+    if (item.direction === "top" || item.direction === "bottom") {
+      itemLeftEdge = item.x - item.width / 4;
+      itemRightEdge = item.x + item.width / 4;
+      itemTopEdge = item.y - item.height / 2;
+      itemBottomEdge = item.y + item.height / 2;
+    }
+
+    if (item.direction === "q1" || item.direction === "q4") {
+      // right horizontal
+      itemLeftEdge = item.x - item.width / 4;
+      itemRightEdge = item.x + item.width / 2;
+      itemTopEdge = item.y - item.height / 4;
+      itemBottomEdge = item.y + item.height / 4;
+    }
+
+    if (item.direction === "q2" || item.direction === "q3") {
+      // left horizontal
+      itemLeftEdge = item.x - item.width / 2;
+      itemRightEdge = item.x + item.width / 4;
+      itemTopEdge = item.y - item.height / 4;
+      itemBottomEdge = item.y + item.height / 4;
+    }
+
+    if (item.direction === "q1" || item.direction === "q2") {
+      // top vertical
+      itemLeftEdge = item.x - item.width / 4;
+      itemRightEdge = item.x + item.width / 4;
+      itemTopEdge = item.y - item.height / 2;
+      itemBottomEdge = item.y + item.height / 4;
+    }
+
+    if (item.direction === "q3" || item.direction === "q4") {
+      // bottom vertical
+      itemLeftEdge = item.x - item.width / 4;
+      itemRightEdge = item.x + item.width / 4;
+      itemTopEdge = item.y - item.height / 4;
+      itemBottomEdge = item.y + item.height / 2;
+    }
 
     if (
       elLeftEdge < itemRightEdge &&
@@ -602,7 +647,7 @@ function mutate(arr) {
   arr.forEach((round) => {
     let new_enemies = Math.round(round.enemies * 1.3);
     let new_health = Math.round(round.health * 1.5);
-    let new_speed = round.speed + 0.1;
+    let new_speed = round.speed - 0.2;
     let new_prizeMoney = Math.round(round.prizeMoney * 1.7);
     // if (new_prizeMoney === round.prizeMoney) {
     //   new_prizeMoney = round.prizeMoney++;

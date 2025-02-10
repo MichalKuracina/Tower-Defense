@@ -135,6 +135,7 @@ async function path(routeObj, pathTiles) {
   road.position.set(new_x, new_y);
   road.anchor.set(0.5);
   road.label = "roadTile";
+  road.direction = direction;
   road.zIndex = 1;
   app.stage.addChild(road);
   pathTiles.push(road);
@@ -175,6 +176,7 @@ async function path(routeObj, pathTiles) {
       (direction === "bottom" && nextDirection === "right")
     ) {
       curve = new PIXI.Sprite(roadSpritesheet.textures.q1curve);
+      curve.direction = "q1";
     }
 
     if (
@@ -182,6 +184,7 @@ async function path(routeObj, pathTiles) {
       (direction === "bottom" && nextDirection === "left")
     ) {
       curve = new PIXI.Sprite(roadSpritesheet.textures.q2curve);
+      curve.direction = "q2";
     }
 
     if (
@@ -189,6 +192,7 @@ async function path(routeObj, pathTiles) {
       (direction === "top" && nextDirection === "left")
     ) {
       curve = new PIXI.Sprite(roadSpritesheet.textures.q3curve);
+      curve.direction = "q3";
     }
 
     if (
@@ -196,7 +200,10 @@ async function path(routeObj, pathTiles) {
       (direction === "top" && nextDirection === "right")
     ) {
       curve = new PIXI.Sprite(roadSpritesheet.textures.q4curve);
+      curve.direction = "q4";
     }
+
+    pathTiles.pop(); // remove previous tile, because you are going to place a curve. They will overlap and cause issues with collision hit
 
     curve.position.set(new_x, new_y);
     curve.anchor.set(0.5);

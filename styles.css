@@ -17,6 +17,10 @@ canvas {
   width: 50vw;
 }
 
+/* canvas {
+  height: 100vh;
+} */
+
 .githublogo > img {
   margin-top: 5vh;
   width: 42px;
