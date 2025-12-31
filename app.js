@@ -58,8 +58,6 @@ let dragTarget_x = 0;
 let dragTarget_y = 0;
 let firstEnemy = false;
 
-let rootF = "https://github.com/MichalKuracina/Tower-Defense/tree/main/assets/";
-
 function run() {
     (async () => {
         app = new PIXI.Application();
@@ -71,9 +69,9 @@ function run() {
         });
         document.body.appendChild(app.canvas);
 
-        roadsSprites.meta.image = rootF + "road-spritesheet.png";
-        towerSprites.meta.image = rootF + "tower-spritesheet.png";
-        playPauseSprites.meta.image = rootF + "play-pause-spritesheet.png";
+        roadsSprites.meta.image = "./assets/road-spritesheet.png";
+        towerSprites.meta.image = "./assets/tower-spritesheet.png";
+        playPauseSprites.meta.image = "./assets/play-pause-spritesheet.png";
 
         const roadTexture = await PIXI.Assets.load(roadsSprites.meta.image);
         roadSpritesheet = new PIXI.Spritesheet(roadTexture, roadsSprites);
@@ -92,25 +90,25 @@ function run() {
         );
         await playPauseSpritesheet.parse();
 
-        const heartTexture = await PIXI.Assets.load(rootF + "heart.png");
+        const heartTexture = await PIXI.Assets.load("./assets/heart.png");
         const heartSpr_small = PIXI.Sprite.from(heartTexture);
 
-        const heartTexture2 = await PIXI.Assets.load(rootF + "heart.png");
+        const heartTexture2 = await PIXI.Assets.load("./assets/heart.png");
         heartSpr_big = PIXI.Sprite.from(heartTexture2);
 
-        const loadTexture = await PIXI.Assets.load(rootF + "load.png");
+        const loadTexture = await PIXI.Assets.load("./assets/load.png");
         const load = PIXI.Sprite.from(loadTexture);
 
-        const saveTexture = await PIXI.Assets.load(rootF + "save.png");
+        const saveTexture = await PIXI.Assets.load("./assets/save.png");
         const save = PIXI.Sprite.from(saveTexture);
 
         const worldEditorTexture = await PIXI.Assets.load(
-            rootF + "levelEditor.png"
+            "./assets/levelEditor.png"
         );
         const worldEditorSprite = PIXI.Sprite.from(worldEditorTexture);
 
-        levelUpTexture = await PIXI.Assets.load(rootF + "levelup.png");
-        crownTexture = await PIXI.Assets.load(rootF + "crown.png");
+        levelUpTexture = await PIXI.Assets.load("./assets/levelup.png");
+        crownTexture = await PIXI.Assets.load("./assets/crown.png");
 
         await grass();
 
